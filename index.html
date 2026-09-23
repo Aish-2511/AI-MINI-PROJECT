@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI Predict – AI Student Performance Predictor</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- HTML2PDF CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Left Collapsible Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-header">
+          <a href="#" class="logo-brand nav-trigger" data-tab="home">
+            <div class="logo-icon-box">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="logo-text">
+              EduAI <span>Predict</span>
+            </div>
+          </a>
+          <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a class="nav-item active" data-tab="home">
+            <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+            <span class="nav-text">Home</span>
+          </a>
+          <a class="nav-item" data-tab="prediction">
+            <span class="nav-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+            <span class="nav-text">Prediction</span>
+            <span class="sidebar-badge">AI</span>
+          </a>
+          <a class="nav-item" data-tab="attendance">
+            <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+            <span class="nav-text">Attendance Tracker</span>
+          </a>
+          <a class="nav-item" data-tab="planner">
+            <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span>
+            <span class="nav-text">Study Planner</span>
+          </a>
+          <a class="nav-item" data-tab="analytics">
+            <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
+            <span class="nav-text">Analytics</span>
+          </a>
+          <a class="nav-item" data-tab="dataset">
+            <span class="nav-icon"><i class="fa-solid fa-database"></i></span>
+            <span class="nav-text">Dataset</span>
+          </a>
+          <a class="nav-item" data-tab="model">
+            <span class="nav-icon"><i class="fa-solid fa-network-wired"></i></span>
+            <span class="nav-text">AI Model</span>
+          </a>
+          <a class="nav-item" data-tab="reports">
+            <span class="nav-icon"><i class="fa-solid fa-file-invoice"></i></span>
+            <span class="nav-text">Reports</span>
+          </a>
+          <a class="nav-item" data-tab="profile">
+            <span class="nav-icon"><i class="fa-solid fa-user-gear"></i></span>
+            <span class="nav-text">Profile</span>
+          </a>
+          <a class="nav-item" data-tab="settings">
+            <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+            <span class="nav-text">Settings</span>
+          </a>
+          <a class="nav-item" data-tab="about">
+            <span class="nav-icon"><i class="fa-solid fa-circle-info"></i></span>
+            <span class="nav-text">About</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-quick-card nav-trigger" data-tab="profile" style="cursor: pointer;">
+          <div class="avatar-img">A</div>
+          <div class="sidebar-footer-info">
+            <div style="font-weight: 700; font-size: 0.9rem;" class="user-name-display">Aishwarya</div>
+            <div style="font-size: 0.75rem; opacity: 0.7;" class="user-email-display">CSE • Sem 5</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <main id="main-wrapper">
+      <!-- Top Navigation Header -->
+      <header id="top-header">
+        <div class="header-greeting">
+          <h1 class="greeting-title">Hey <span class="user-name-display">Aishwarya</span> 👋 Let's build your better tomorrow!</h1>
+          <p class="greeting-sub">Use AI to predict your performance, stay organized, and achieve your academic goals.</p>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="global-search" placeholder="Search anything...">
+          </div>
+
+          <button class="header-btn" id="notifications-btn" title="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notification-badge"></span>
+          </button>
+
+          <button class="theme-toggle-btn" id="theme-toggle">
+            <i class="fa-regular fa-moon"></i>
+            <span id="theme-text">Dark Mode</span>
+          </button>
+
+          <div class="user-quick-card nav-trigger" data-tab="profile" style="background: none; padding: 0; cursor: pointer;">
+            <div class="avatar-img" style="width: 44px; height: 44px; font-size: 1.1rem;">A</div>
+          </div>
+
+          <button class="header-btn" id="logout-btn" title="Sign Out">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Pages Container -->
+      <div class="content-body">
+        
+        <!-- PAGE 1: LANDING PAGE -->
+        <section id="page-landing" class="tab-page">
+          <div class="auth-page-wrapper" style="border-radius: 28px;">
+            <div class="landing-split">
+              <div style="color: white;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                  <div class="logo-icon-box" style="width: 52px; height: 52px; font-size: 26px;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <h1 style="font-size: 2.2rem; font-weight: 800;">EduAI <span style="color: #C084FC;">Predict</span></h1>
+                </div>
+
+                <h2 style="font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px;">
+                  Smarter Learning • Better Results • Brighter Future
+                </h2>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; line-height: 1.6;">
+                  Predict your academic performance using Artificial Intelligence, track your lecture attendance, and manage daily study goals with ease.
+                </p>
+
+                <div class="grid-2" style="margin-top: 24px;">
+                  <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 1.5rem; color: #F472B6;"></i>
+                    <div style="font-weight: 700;">AI Performance Predictor</div>
+                  </div>
+                  <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-calendar-check" style="font-size: 1.5rem; color: #34D399;"></i>
+                    <div style="font-weight: 700;">Smart Attendance Tracker</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="auth-card" style="text-align: center;">
+                <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 12px;">Welcome to EduAI 🎓</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 28px;">Sign in or create your student account to access your personal AI academic portal.</p>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                  <button class="btn btn-primary nav-trigger" data-tab="signin" style="justify-content: center; background: var(--primary-color); color: white; padding: 16px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In to Your Account
+                  </button>
+                  <button class="btn nav-trigger" data-tab="signup" style="justify-content: center; background: var(--bg-base); border: 1px solid var(--border-color); padding: 16px; font-weight: 700;">
+                    <i class="fa-solid fa-user-plus"></i> Create New Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 2: SIGN IN VIEW -->
+        <section id="page-signin" class="tab-page">
+          <div class="auth-page-wrapper" style="border-radius: 28px;">
+            <div class="auth-card">
+              <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;">Welcome Back 👋</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Continue your academic journey with AI-powered insights.</p>
+
+              <form id="signin-form">
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="req">*</span></label>
+                  <input type="email" id="signin-email" class="form-control" placeholder="Enter your email address" value="aishwarya@college.edu" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Password <span class="req">*</span></label>
+                  <div style="position: relative;">
+                    <input type="password" id="signin-password" class="form-control" placeholder="Enter your password" value="Aish@2026" required>
+                    <button type="button" class="toggle-password-btn" data-target="signin-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" checked> Remember Me
+                  </label>
+                  <a class="nav-trigger" data-tab="forgot" style="color: var(--primary-color); font-weight: 700; text-decoration: none; cursor: pointer;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--primary-color); color: white; padding: 14px; font-size: 1rem;">
+                  <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                </button>
+              </form>
+
+              <div style="display: flex; align-items: center; margin: 20px 0; color: var(--text-muted); font-size: 0.8rem;">
+                <div style="flex:1; height: 1px; background: var(--border-color);"></div>
+                <span style="padding: 0 10px;">OR</span>
+                <div style="flex:1; height: 1px; background: var(--border-color);"></div>
+              </div>
+
+              <button class="btn sso-btn" style="width: 100%; justify-content: center; background: var(--bg-base); border: 1px solid var(--border-color); color: var(--text-main); padding: 12px; font-size: 0.9rem;">
+                <i class="fa-brands fa-google" style="color: #EA4335;"></i> Continue with Google
+              </button>
+
+              <div style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: var(--text-muted);">
+                Don't have an account? <a class="nav-trigger" data-tab="signup" style="color: var(--primary-color); font-weight: 700; cursor: pointer;">Create Account</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 3: CREATE ACCOUNT VIEW -->
+        <section id="page-signup" class="tab-page">
+          <div class="auth-page-wrapper" style="border-radius: 28px;">
+            <div class="auth-card" style="max-width: 520px;">
+              <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;">Create Your Account 🚀</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Start your journey toward better academic performance.</p>
+
+              <form id="signup-form">
+                <div class="form-group">
+                  <label class="form-label">Username <span class="req">*</span></label>
+                  <input type="text" id="signup-username" class="form-control" placeholder="Minimum 4 characters" value="Aishwarya" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="req">*</span></label>
+                  <input type="email" id="signup-email" class="form-control" placeholder="Enter valid email address" value="aishwarya@college.edu" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Password <span class="req">*</span></label>
+                  <div style="position: relative;">
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create strong password" value="Aish@2026" required>
+                    <button type="button" class="toggle-password-btn" data-target="signup-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+
+                  <!-- Live Password Rule Checklist Panel -->
+                  <div class="password-rules-panel">
+                    <div class="password-rule valid" id="rule-len"><i class="fa-solid fa-circle-check"></i> Minimum 8 characters</div>
+                    <div class="password-rule valid" id="rule-upper"><i class="fa-solid fa-circle-check"></i> At least 1 uppercase letter</div>
+                    <div class="password-rule valid" id="rule-lower"><i class="fa-solid fa-circle-check"></i> At least 1 lowercase letter</div>
+                    <div class="password-rule valid" id="rule-num"><i class="fa-solid fa-circle-check"></i> At least 1 number</div>
+                    <div class="password-rule valid" id="rule-spec"><i class="fa-solid fa-circle-check"></i> At least 1 special character (@, #, $, etc.)</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Confirm Password <span class="req">*</span></label>
+                  <input type="password" id="signup-confirm-password" class="form-control" placeholder="Re-enter password" value="Aish@2026" required>
+                </div>
+
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 20px; cursor: pointer;">
+                  <input type="checkbox" checked required> I agree to the Terms & Conditions and Privacy Policy
+                </label>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--primary-color); color: white; padding: 14px; font-size: 1rem;">
+                  <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+              </form>
+
+              <div style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: var(--text-muted);">
+                Already have an account? <a class="nav-trigger" data-tab="signin" style="color: var(--primary-color); font-weight: 700; cursor: pointer;">Sign In</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 4: FORGOT PASSWORD VIEW -->
+        <section id="page-forgot" class="tab-page">
+          <div class="auth-page-wrapper" style="border-radius: 28px;">
+            <div class="auth-card">
+              <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;">Reset Password 🔑</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Enter your registered email address to receive password reset instructions.</p>
+
+              <form onsubmit="event.preventDefault(); Toast.show('Password reset link sent to your email!', 'success');">
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="req">*</span></label>
+                  <input type="email" class="form-control" placeholder="Enter your email address" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--primary-color); color: white; padding: 14px;">Send Reset Link</button>
+              </form>
+
+              <div style="text-align: center; margin-top: 20px; font-size: 0.88rem;">
+                Back to <a class="nav-trigger" data-tab="signin" style="color: var(--primary-color); font-weight: 700; cursor: pointer;">Sign In</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 5: DASHBOARD HOME -->
+        <section id="page-home" class="tab-page active">
+          <!-- Hero Banner -->
+          <div class="hero-banner">
+            <div class="hero-content">
+              <div class="hero-tag"><i class="fa-solid fa-sparkles"></i> AI Academic SaaS Engine</div>
+              <h2 class="hero-title">AI Student Performance Predictor</h2>
+              <p class="hero-sub">Predict your academic performance using Artificial Intelligence, maintain lecture attendance goals, and receive personalized study suggestions.</p>
+              <div class="hero-buttons">
+                <button class="btn btn-primary nav-trigger" data-tab="prediction"><i class="fa-solid fa-wand-magic-sparkles"></i> Predict Performance</button>
+                <button class="btn btn-secondary nav-trigger" data-tab="analytics"><i class="fa-solid fa-chart-line"></i> View Dashboard</button>
+              </div>
+            </div>
+            <div class="hero-illustration">
+              <div class="illustration-svg-box">
+                <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="30" y="80" width="140" height="70" rx="16" fill="white" fill-opacity="0.25"/>
+                  <rect x="45" y="92" width="110" height="46" rx="8" fill="#FFFFFF"/>
+                  <path d="M70 115 L90 100 L110 110 L130 95" stroke="#5B5FEF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="130" cy="95" r="4" fill="#EF4444"/>
+                  <rect x="15" y="45" width="28" height="32" rx="6" fill="#FEF08A" transform="rotate(-10 15 45)"/>
+                  <circle cx="165" cy="50" r="14" fill="#34D399"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Motivational Quote & Streak Card -->
+          <div class="grid-2">
+            <div class="streak-card">
+              <div class="streak-info">
+                <div class="streak-flame">🔥</div>
+                <div>
+                  <div style="font-size: 1.3rem; font-weight: 800;">5 Days Study Streak</div>
+                  <div style="font-size: 0.85rem; opacity: 0.9;">You're consistent! Keep up the great work!</div>
+                </div>
+              </div>
+              <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 14px; font-weight: 800;">+150 XP</div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, #F3E8FF, #EFF6FF); border: none;">
+              <div class="card-title" style="color: var(--primary-color);"><i class="fa-solid fa-quote-left"></i> Quote of the Day</div>
+              <p style="font-size: 1.05rem; font-weight: 700; color: #312E81; margin-top: 8px;">
+                "Discipline today creates academic freedom tomorrow."
+              </p>
+              <div style="margin-top: 12px; font-size: 0.85rem; color: var(--primary-color); font-weight: 600;">— EduAI Academic Coach</div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Grid -->
+          <div class="grid-4">
+            <div class="card">
+              <div class="card-title" style="font-size: 0.95rem; color: var(--text-muted);">Current Attendance</div>
+              <div style="font-size: 2.2rem; font-weight: 800; margin-top: 8px; color: var(--accent-mint);" id="home-att-val">82%</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">41 / 50 Classes Attended</div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="font-size: 0.95rem; color: var(--text-muted);">Internal Marks</div>
+              <div style="font-size: 2.2rem; font-weight: 800; margin-top: 8px; color: var(--primary-color);" id="home-marks-val">42/50</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">84% Average Score</div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="font-size: 0.95rem; color: var(--text-muted);">Assignments</div>
+              <div style="font-size: 2.2rem; font-weight: 800; margin-top: 8px; color: var(--accent-cyan);" id="home-ass-val">16/20</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">80% Completion Rate</div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="font-size: 0.95rem; color: var(--text-muted);">AI Prediction Status</div>
+              <div style="font-size: 1.8rem; font-weight: 800; margin-top: 8px;" id="home-pred-badge">
+                <span class="badge-tag tag-excellent" style="font-size: 1rem; padding: 6px 14px;"><i class="fa-solid fa-trophy"></i> Excellent</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">94.5% Confidence Score</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 6: PREDICTION VIEW -->
+        <section id="page-prediction" class="tab-page">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title"><i class="fa-solid fa-sliders" style="color: var(--primary-color);"></i> Performance Predictor Form</h3>
+                  <div class="card-subtitle">Enter your academic indicators for AI evaluation</div>
+                </div>
+              </div>
+
+              <form id="prediction-form">
+                <div class="form-group">
+                  <label class="form-label">Student Name <span class="req">*</span></label>
+                  <input type="text" id="input-name" class="form-control" value="Aishwarya" required>
+                </div>
+
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Semester <span class="req">*</span></label>
+                    <select id="input-semester" class="form-control">
+                      <option value="Sem 1">Semester 1</option>
+                      <option value="Sem 2">Semester 2</option>
+                      <option value="Sem 3">Semester 3</option>
+                      <option value="Sem 4">Semester 4</option>
+                      <option value="Sem 5" selected>Semester 5</option>
+                      <option value="Sem 6">Semester 6</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Department <span class="req">*</span></label>
+                    <select id="input-dept" class="form-control">
+                      <option value="CSE" selected>Computer Science & Eng</option>
+                      <option value="AIML">AI & Machine Learning</option>
+                      <option value="DS">Data Science</option>
+                      <option value="ECE">Electronics & Comm</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span>Attendance Rate (%) <span class="req">*</span></span>
+                    <span class="value-badge" id="val-att">82%</span>
+                  </label>
+                  <input type="range" id="input-att" class="slider-input" min="40" max="100" value="82">
+                </div>
+
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label class="form-label">
+                      <span>Internal Marks (Max 50) <span class="req">*</span></span>
+                      <span class="value-badge" id="val-marks">42 / 50</span>
+                    </label>
+                    <input type="number" id="input-marks" class="form-control" min="0" max="50" value="42">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      <span>Assignment Score (Max 20) <span class="req">*</span></span>
+                      <span class="value-badge" id="val-ass">16 / 20</span>
+                    </label>
+                    <input type="number" id="input-ass" class="form-control" min="0" max="20" value="16">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span>Daily Study Hours <span class="req">*</span></span>
+                    <span class="value-badge" id="val-hours">5.5 hrs</span>
+                  </label>
+                  <input type="range" id="input-hours" class="slider-input" min="1" max="10" step="0.5" value="5.5">
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 10px;">
+                  <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Performance
+                  </button>
+                  <button type="button" id="reset-prediction-btn" class="btn" style="background: var(--bg-base); border: 1px solid var(--border-color);">
+                    Reset
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <div id="result-card" class="prediction-result-card tier-excellent">
+                <div class="prediction-header">
+                  <div class="prediction-badge-title">
+                    <div class="prediction-icon-circle" id="result-icon-box">
+                      <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                      <div class="prediction-main-label" id="result-tier-label">Excellent</div>
+                      <div class="prediction-subtext" id="result-subtext">You're doing amazing! Keep it up.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="prediction-metrics-grid">
+                  <div class="metric-box">
+                    <div class="metric-val" id="res-conf">94.5%</div>
+                    <div class="metric-lbl">Confidence</div>
+                  </div>
+                  <div class="metric-box">
+                    <div class="metric-val" id="res-risk">Low</div>
+                    <div class="metric-lbl">Risk Level</div>
+                  </div>
+                  <div class="metric-box">
+                    <div class="metric-val" id="res-hours">5-6 hrs</div>
+                    <div class="metric-lbl">Target Study</div>
+                  </div>
+                  <div class="metric-box">
+                    <div class="metric-val" id="res-att-goal">> 90%</div>
+                    <div class="metric-lbl">Att. Goal</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ai-recommendation-panel">
+                <h3 class="card-title"><i class="fa-solid fa-robot" style="color: var(--primary-color);"></i> AI Personalized Study Tips</h3>
+                <ul class="tip-list" id="recommendations-list">
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Maintain attendance above 90% in upcoming core lectures.</li>
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Continue studying 5–6 hours daily with focused break intervals.</li>
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Practice advanced DAA and Operating Systems question papers.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 7: ATTENDANCE TRACKER (COMMERCIAL GRADE UPGRADE) -->
+        <section id="page-attendance" class="tab-page">
+          <!-- Top Bar: Manage Subjects Action Header -->
+          <div class="card" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <h2 style="font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                  <i class="fa-solid fa-calendar-check"></i> Attendance Portal & Subject Management
+                </h2>
+                <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 4px;">Track lectures, log status (Present / Absent / Off), and manage subject thresholds</p>
+              </div>
+              <button class="btn btn-primary" id="open-add-subject-btn" style="background: #FFFFFF; color: var(--primary-color); font-weight: 800;">
+                <i class="fa-solid fa-plus"></i> Add New Subject
+              </button>
+            </div>
+          </div>
+
+          <!-- Lecture Count Dashboard Overview Cards -->
+          <div class="grid-4">
+            <div class="card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px;">
+              <div class="card-title" style="font-size: 0.95rem; color: var(--text-muted); justify-content: center;">Current Attendance</div>
+              
+              <!-- Large Perfectly Centered Animated Ring -->
+              <div class="circle-progress-wrapper">
+                <svg class="circle-svg" viewBox="0 0 140 140">
+                  <circle class="circle-bg" cx="70" cy="70" r="58"></circle>
+                  <circle class="circle-bar" id="att-hero-ring-bar" cx="70" cy="70" r="58" stroke="var(--accent-mint)"></circle>
+                </svg>
+                <div class="circle-center-text">
+                  <span style="font-size: 2.1rem; font-weight: 800; color: var(--text-main); line-height: 1;" id="att-hero-percent">82%</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Overall Rate</span>
+                </div>
+              </div>
+
+              <div style="font-weight: 700; font-size: 0.85rem; color: var(--accent-mint); margin-top: 4px;">
+                <i class="fa-solid fa-circle-check"></i> Attendance Goal: 75%
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+                Present: <span id="stat-att-summary-att">41</span> • Absent: <span id="stat-att-summary-abs">9</span> • Off: <span id="stat-att-summary-off">3</span>
+              </div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+              <div class="card-title" style="font-size: 0.9rem; color: var(--text-muted); justify-content: center;">Lectures Attended (Present)</div>
+              <div style="font-size: 2.2rem; font-weight: 800; color: var(--accent-mint); margin-top: 10px;" id="stat-att-classes">41</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Attended Lectures</div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+              <div class="card-title" style="font-size: 0.9rem; color: var(--text-muted); justify-content: center;">Lectures Missed (Absent)</div>
+              <div style="font-size: 2.2rem; font-weight: 800; color: var(--accent-pink); margin-top: 10px;" id="stat-missed-classes">9</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Missed Lectures</div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+              <div class="card-title" style="font-size: 0.9rem; color: var(--text-muted); justify-content: center;">Off / Holiday Lectures</div>
+              <div style="font-size: 2.2rem; font-weight: 800; color: var(--text-muted); margin-top: 10px;" id="stat-off-classes">3</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Faculty Leave / Holiday</div>
+            </div>
+          </div>
+
+          <!-- Subject-wise Attendance Breakdown Section -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-book-bookmark" style="color: var(--accent-pink);"></i> Subject Attendance Breakdown</h3>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Mark Present, Absent, or Off for each subject</span>
+            </div>
+            <div class="grid-3" id="subject-cards-container">
+              <!-- Dynamically rendered subjects with Present, Absent, Off controls -->
+            </div>
+          </div>
+
+          <!-- Monthly Attendance Log & Attendance Goal Calculator Grid -->
+          <div class="grid-2">
+            <!-- Monthly Attendance Log -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-calendar-days" style="color: var(--primary-color);"></i> Monthly Attendance Log</h3>
+                <div style="display: flex; gap: 10px; font-size: 0.75rem;">
+                  <span style="color: var(--accent-mint); font-weight: 700;">● Present</span>
+                  <span style="color: var(--accent-pink); font-weight: 700;">● Absent</span>
+                  <span style="color: var(--text-muted); font-weight: 700;">● Off</span>
+                </div>
+              </div>
+              <div class="calendar-grid" id="attendance-calendar"></div>
+            </div>
+
+            <!-- Attendance Goal Calculator -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title"><i class="fa-solid fa-calculator" style="color: var(--secondary-color);"></i> Attendance Goal Calculator</h3>
+                  <div class="card-subtitle">Calculate how many lectures you need to attend</div>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px;">
+                <label class="form-label">Target Attendance Goal (%)</label>
+                <select id="calc-target" class="form-control">
+                  <option value="75">75% Minimum Requirement</option>
+                  <option value="80" selected>80% Safe Threshold</option>
+                  <option value="85">85% Target</option>
+                  <option value="90">90% Excellence</option>
+                </select>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                <div style="background: var(--accent-mint-light); padding: 16px; border-radius: 16px; border: 1px solid var(--accent-mint);">
+                  <div style="font-size: 0.75rem; color: var(--accent-mint); font-weight: 700; text-transform: uppercase;">Needed Continuous Lectures</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-main);" id="calc-needed-result">Attend next 2 lectures</div>
+                </div>
+
+                <div style="background: var(--accent-pink-light); padding: 16px; border-radius: 16px; border: 1px solid var(--accent-pink);">
+                  <div style="font-size: 0.75rem; color: var(--accent-pink); font-weight: 700; text-transform: uppercase;">Max Missable Lectures</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-main);" id="calc-miss-result">Can miss at most 1 lecture</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance History Table with Edit & Delete Controls -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i> Attendance History Log</h3>
+                <div class="card-subtitle">View, edit, or delete logged attendance entries</div>
+              </div>
+
+              <div style="display: flex; gap: 12px;">
+                <input type="text" id="att-history-search" class="form-control" placeholder="Search subject..." style="width: 180px;">
+                <select id="att-history-filter" class="form-control" style="width: 140px;">
+                  <option value="ALL">All Status</option>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                  <option value="Off">Off</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Subject Name</th>
+                    <th>Status</th>
+                    <th>Faculty Name</th>
+                    <th>Actions (Edit / Delete)</th>
+                  </tr>
+                </thead>
+                <tbody id="att-history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- AI Attendance Insights & Gamification Badges -->
+          <div class="grid-2">
+            <div class="card" style="background: linear-gradient(135deg, var(--bg-card), var(--accent-purple-light)); border-color: rgba(139, 92, 246, 0.3);">
+              <h3 class="card-title"><i class="fa-solid fa-lightbulb" style="color: var(--accent-yellow);"></i> AI Attendance Insights</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px;">
+                <div style="background: var(--bg-card); padding: 12px 16px; border-radius: 14px; font-size: 0.88rem; font-weight: 500; border: 1px solid var(--border-color);">
+                  <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-pink);"></i> "Cybersecurity attendance is 72% (below 75%). Attend the next 3 lectures."
+                </div>
+                <div style="background: var(--bg-card); padding: 12px 16px; border-radius: 14px; font-size: 0.88rem; font-weight: 500; border: 1px solid var(--border-color);">
+                  <i class="fa-solid fa-star" style="color: var(--accent-mint);"></i> "Great job! English attendance is 95% (Excellent Range)."
+                </div>
+                <div style="background: var(--bg-card); padding: 12px 16px; border-radius: 14px; font-size: 0.88rem; font-weight: 500; border: 1px solid var(--border-color);">
+                  <i class="fa-solid fa-bell" style="color: var(--primary-color);"></i> "Reminder: Tomorrow you have DAA lecture at 9:00 AM."
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-award" style="color: var(--accent-yellow);"></i> Attendance Achievements</h3>
+              <div class="badge-grid" style="margin-top: 14px;">
+                <div class="badge-item">
+                  <div class="badge-icon">🎯</div>
+                  <div class="badge-name">Perfect Attendance</div>
+                </div>
+                <div class="badge-item">
+                  <div class="badge-icon">🔥</div>
+                  <div class="badge-name">7-Day Streak</div>
+                </div>
+                <div class="badge-item">
+                  <div class="badge-icon">⭐</div>
+                  <div class="badge-name">Attendance Hero</div>
+                </div>
+                <div class="badge-item">
+                  <div class="badge-icon">📚</div>
+                  <div class="badge-name">Lecture Champ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 8: STUDY PLANNER -->
+        <section id="page-planner" class="tab-page">
+          <div class="card">
+            <div class="planner-header-stats">
+              <div>
+                <h2 class="card-title" style="font-size: 1.4rem;"><i class="fa-solid fa-list-check" style="color: var(--primary-color);"></i> Smart Study Planner</h2>
+                <div class="card-subtitle">Keep track of your study deadlines & homework</div>
+              </div>
+              <button class="btn btn-primary" id="add-task-btn" style="background: var(--primary-color); color: white;">
+                <i class="fa-solid fa-plus"></i> Add New Task
+              </button>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px;">
+                <span>Progress Overview</span>
+                <span id="planner-progress-text">0 / 0 Tasks Completed</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="planner-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Task Controls Toolbar -->
+            <div class="planner-toolbar" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; background: var(--bg-base); padding: 14px; border-radius: 16px; border: 1px solid var(--border-color);">
+              <!-- Section Tabs -->
+              <div class="planner-tabs" style="display: flex; gap: 6px;">
+                <button type="button" class="planner-tab-btn active" data-section="ALL" style="padding: 8px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--primary-color); color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">All Tasks</button>
+                <button type="button" class="planner-tab-btn" data-section="TODAY" style="padding: 8px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">Today's Tasks</button>
+                <button type="button" class="planner-tab-btn" data-section="UPCOMING" style="padding: 8px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;">Upcoming Tasks</button>
+              </div>
+
+              <!-- Search & Filters -->
+              <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <div style="position: relative; width: 180px;">
+                  <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;"></i>
+                  <input type="text" id="planner-search" class="form-control" placeholder="Search tasks..." style="padding-left: 34px; height: 38px; font-size: 0.85rem;">
+                </div>
+
+                <select id="planner-filter-subject" class="form-control" style="width: 140px; height: 38px; font-size: 0.85rem;">
+                  <option value="ALL">All Subjects</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Operating System">Operating System</option>
+                  <option value="DAA">DAA</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="CGVR">CGVR</option>
+                  <option value="English">English</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <select id="planner-filter-priority" class="form-control" style="width: 130px; height: 38px; font-size: 0.85rem;">
+                  <option value="ALL">All Priority</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+
+                <select id="planner-sort" class="form-control" style="width: 140px; height: 38px; font-size: 0.85rem;">
+                  <option value="DUE_ASC">Sort: Due Date (Earliest)</option>
+                  <option value="DUE_DESC">Sort: Due Date (Latest)</option>
+                  <option value="PRIORITY">Sort: Priority</option>
+                  <option value="NAME">Sort: Task Name</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="task-list" id="task-list-container"></div>
+          </div>
+        </section>
+
+        <!-- PAGE 9: ANALYTICS DASHBOARD -->
+        <section id="page-analytics" class="tab-page">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-chart-pie" style="color: var(--primary-color);"></i> Prediction Distribution</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-pie-pred"></canvas></div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: var(--accent-cyan);"></i> Internal vs Assignment Marks</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-bar-marks"></canvas></div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-chart-line" style="color: var(--accent-mint);"></i> Study Hours vs Predicted Score</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-line-study"></canvas></div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-draw-polygon" style="color: var(--accent-pink);"></i> Attendance vs Performance</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-scatter-att"></canvas></div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--secondary-color);"></i> Weekly Study Hours Log</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-weekly-hours"></canvas></div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-arrow-trend-up" style="color: var(--accent-yellow);"></i> Assignment Completion Trend</h3>
+              <div style="height: 260px; margin-top: 16px;"><canvas id="chart-assignment-trend"></canvas></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 10: DATASET -->
+        <section id="page-dataset" class="tab-page">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title"><i class="fa-solid fa-database" style="color: var(--accent-cyan);"></i> Student Evaluation Dataset</h3>
+                <div class="card-subtitle">Training records spreadsheet preview</div>
+              </div>
+
+              <div style="display: flex; gap: 12px;">
+                <button class="btn" onclick="Toast.show('CSV upload feature simulated successfully!', 'success');" style="background: var(--bg-base); border: 1px solid var(--border-color);"><i class="fa-solid fa-upload"></i> Upload CSV</button>
+                <input type="text" id="dataset-search" class="form-control" placeholder="Search name..." style="width: 180px;">
+                <select id="dataset-filter-tier" class="form-control" style="width: 140px;">
+                  <option value="ALL">All Tiers</option>
+                  <option value="Excellent">Excellent</option>
+                  <option value="Pass">Pass</option>
+                  <option value="At Risk">At Risk</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Semester</th>
+                    <th>Attendance</th>
+                    <th>Internal Marks</th>
+                    <th>Assignments</th>
+                    <th>Study Hrs</th>
+                    <th>Prediction</th>
+                  </tr>
+                </thead>
+                <tbody id="dataset-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 11: AI MODEL -->
+        <section id="page-model" class="tab-page">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-diagram-project" style="color: var(--primary-color);"></i> Machine Learning Pipeline</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 18px;">
+                <div style="background: var(--bg-base); padding: 14px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center;">1</span> Data Preprocessing & Scaling
+                </div>
+                <div style="background: var(--bg-base); padding: 14px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 32px; height: 32px; border-radius: 50%; background: var(--secondary-color); color: white; display: flex; align-items: center; justify-content: center;">2</span> Random Forest Classifier (100 Trees)
+                </div>
+                <div style="background: var(--bg-base); padding: 14px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+                  <span style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent-mint); color: white; display: flex; align-items: center; justify-content: center;">3</span> Score Prediction & Recommendation Engine
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title"><i class="fa-solid fa-bullseye" style="color: var(--accent-mint);"></i> Confusion Matrix</h3>
+              <div class="confusion-matrix-grid">
+                <div class="matrix-cell" style="background: #22C55E;"><span>42</span><span style="font-size: 0.7rem;">True Excellent</span></div>
+                <div class="matrix-cell" style="background: #4ADE80;"><span>2</span><span style="font-size: 0.7rem;">False Pass</span></div>
+                <div class="matrix-cell" style="background: #F87171;"><span>0</span><span style="font-size: 0.7rem;">False Risk</span></div>
+                <div class="matrix-cell" style="background: #60A5FA;"><span>1</span><span style="font-size: 0.7rem;">False Exc</span></div>
+                <div class="matrix-cell" style="background: #3B82F6;"><span>38</span><span style="font-size: 0.7rem;">True Pass</span></div>
+                <div class="matrix-cell" style="background: #F87171;"><span>1</span><span style="font-size: 0.7rem;">False Risk</span></div>
+                <div class="matrix-cell" style="background: #F87171;"><span>0</span><span style="font-size: 0.7rem;">False Exc</span></div>
+                <div class="matrix-cell" style="background: #FB923C;"><span>1</span><span style="font-size: 0.7rem;">False Pass</span></div>
+                <div class="matrix-cell" style="background: #EF4444;"><span>15</span><span style="font-size: 0.7rem;">True Risk</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 24px;">
+            <h3 class="card-title"><i class="fa-solid fa-chart-simple" style="color: var(--primary-color);"></i> Random Forest Feature Importance</h3>
+            <div style="height: 240px; margin-top: 16px;"><canvas id="chart-feature-importance"></canvas></div>
+          </div>
+        </section>
+
+        <!-- PAGE 12: REPORTS (PROFESSIONAL OFFICIAL ACADEMIC TRANSCRIPT) -->
+        <section id="page-reports" class="tab-page">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title"><i class="fa-solid fa-file-pdf" style="color: var(--accent-pink);"></i> Official Student Performance Report</h3>
+                <div class="card-subtitle">AI-Powered Academic Evaluation & Transcript</div>
+              </div>
+              <button class="btn btn-primary" id="print-report-btn" style="background: var(--primary-color); color: white; padding: 12px 24px; font-weight: 800;">
+                <i class="fa-solid fa-download"></i> Download PDF Report
+              </button>
+            </div>
+
+            <!-- Report Printable / Export Printable Area -->
+            <div id="report-printable-area">
+              <!-- Report Header Banner -->
+              <div class="report-header-banner">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                  <div class="logo-icon-box" style="width: 52px; height: 52px; font-size: 26px;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <div>
+                    <h1 style="font-weight: 800; font-size: 1.8rem; color: var(--text-main); margin: 0;">Student Performance Report</h1>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 2px;">EduAI Predict • AI-Powered Academic Analysis & Personalized Insights</p>
+                  </div>
+                </div>
+                <div style="text-align: right; font-size: 0.85rem; color: var(--text-muted);">
+                  <div><strong>Date Generated:</strong> <span id="report-date-gen">September 22, 2026</span></div>
+                  <div><strong>Student ID:</strong> EDU-2026-889</div>
+                  <div><strong>Semester:</strong> <span class="report-student-sem">Semester 5</span></div>
+                </div>
+              </div>
+
+              <!-- Student Information Card -->
+              <div class="report-student-card">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                  <div class="avatar-img" style="width: 60px; height: 60px; font-size: 1.6rem;">A</div>
+                  <div>
+                    <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0;" class="report-student-name">Aishwarya</h2>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2px;" class="report-student-email">aishwarya@college.edu</p>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-size: 0.88rem;">
+                  <div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Department</div>
+                    <div style="font-weight: 700;" class="report-student-dept">Computer Science & Eng</div>
+                  </div>
+                  <div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">College Name</div>
+                    <div style="font-weight: 700;">National Inst. of Tech.</div>
+                  </div>
+                  <div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Roll Number</div>
+                    <div style="font-weight: 700;">2026-CS-101</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Overall Performance Summary Grid -->
+              <div class="grid-4">
+                <div style="background: var(--bg-base); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center;">
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Attendance Rate</div>
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--accent-mint); margin-top: 4px;" id="report-val-att">82%</div>
+                </div>
+
+                <div style="background: var(--bg-base); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center;">
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">AI Prediction Result</div>
+                  <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-mint); margin-top: 4px;" id="report-val-pred">Excellent</div>
+                </div>
+
+                <div style="background: var(--bg-base); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center;">
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Confidence Score</div>
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--primary-color); margin-top: 4px;" id="report-val-conf">94.5%</div>
+                </div>
+
+                <div style="background: var(--bg-base); padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); text-align: center;">
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Overall Academic Score</div>
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--secondary-color); margin-top: 4px;" id="report-val-score">88 / 100</div>
+                </div>
+              </div>
+
+              <!-- Subject-Wise Academic Marks Table -->
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-table" style="color: var(--primary-color);"></i> Subject-Wise Academic Breakdown
+                </h3>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Subject Name</th>
+                        <th>Internal Marks (50)</th>
+                        <th>Assignment Marks (20)</th>
+                        <th>Total Marks (100)</th>
+                        <th>Attendance %</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="report-subject-table-body">
+                      <!-- Dynamically rendered rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Attendance Summary Section -->
+              <div class="grid-2">
+                <div style="background: var(--bg-base); padding: 20px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                  <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px;">Overall Attendance Ring</div>
+                  <div class="circle-progress-wrapper" style="padding: 0;">
+                    <svg class="circle-svg" viewBox="0 0 140 140">
+                      <circle class="circle-bg" cx="70" cy="70" r="58"></circle>
+                      <circle class="circle-bar" id="report-att-ring-bar" cx="70" cy="70" r="58" stroke="var(--accent-mint)"></circle>
+                    </svg>
+                    <div class="circle-center-text">
+                      <span style="font-size: 1.8rem; font-weight: 800;" id="report-att-ring-percent">82%</span>
+                      <span style="font-size: 0.7rem; color: var(--text-muted);">Attended</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="background: var(--bg-base); padding: 20px; border-radius: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; gap: 14px;">
+                  <div style="font-weight: 700; font-size: 0.95rem;">Attendance Breakdown</div>
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.88rem;">
+                    <div>Total Conducted: <strong>50 Lectures</strong></div>
+                    <div>Present: <strong style="color: var(--accent-mint);">41 Lectures</strong></div>
+                    <div>Absent: <strong style="color: var(--accent-pink);">9 Lectures</strong></div>
+                    <div>Off / Holiday: <strong style="color: var(--text-muted);">3 Lectures</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AI Recommendations & Motivational Sticky Note -->
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-robot" style="color: var(--primary-color);"></i> AI Academic Recommendations
+                </h3>
+                <ul class="tip-list" style="margin: 0;">
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Attendance rate of 82% is your strongest academic stability factor.</li>
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Increase internal test focus in Cybersecurity to boost overall semester rank.</li>
+                  <li class="tip-item"><div class="tip-icon"><i class="fa-solid fa-check"></i></div> Maintain daily 5-6 study hours with 15-minute scheduled break intervals.</li>
+                </ul>
+
+                <div class="sticky-note">
+                  <span>🌸</span> "Discipline today creates academic freedom tomorrow. Keep up your continuous progress!"
+                </div>
+              </div>
+
+              <!-- Achievements Grid -->
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-award" style="color: var(--accent-yellow);"></i> Earned Achievements
+                </h3>
+                <div class="badge-grid">
+                  <div class="badge-item">
+                    <div class="badge-icon">🎯</div>
+                    <div class="badge-name">Perfect Attendance</div>
+                  </div>
+                  <div class="badge-item">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-name">Study Streak</div>
+                  </div>
+                  <div class="badge-item">
+                    <div class="badge-icon">⭐</div>
+                    <div class="badge-name">Excellent Performer</div>
+                  </div>
+                  <div class="badge-item">
+                    <div class="badge-icon">📚</div>
+                    <div class="badge-name">Assignment Master</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Official Footer -->
+              <div style="border-top: 2px solid var(--border-color); padding-top: 20px; text-align: center; color: var(--text-muted); font-size: 0.82rem;">
+                <div>EduAI Predict — AI Powered Student Success Platform</div>
+                <div style="margin-top: 4px;">This official performance transcript is generated automatically via Artificial Intelligence modeling.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 13: USER PROFILE -->
+        <section id="page-profile" class="tab-page">
+          <div class="grid-2">
+            <div class="card" style="text-align: center;">
+              <div class="avatar-img" style="width: 90px; height: 90px; font-size: 2.2rem; margin: 0 auto 16px;">A</div>
+              <h2 style="font-size: 1.4rem; font-weight: 800;" class="user-name-display">Aishwarya</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;" class="user-email-display">aishwarya@college.edu</p>
+
+              <div style="display: flex; gap: 10px; justify-content: center; margin-top: 16px;">
+                <span class="badge-tag tag-excellent" style="padding: 6px 14px;"><i class="fa-solid fa-trophy"></i> Sem 5 Leader</span>
+                <span class="badge-tag tag-pass" style="padding: 6px 14px;"><i class="fa-solid fa-fire"></i> 5 Day Streak</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="card-title" style="margin-bottom: 16px;"><i class="fa-solid fa-user-pen" style="color: var(--primary-color);"></i> Edit Student Profile</h3>
+              <form onsubmit="event.preventDefault(); Toast.show('Profile updated successfully!', 'success');">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" value="Aishwarya">
+                </div>
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-control">
+                      <option selected>Computer Science & Eng</option>
+                      <option>AI & Machine Learning</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Semester</label>
+                    <select class="form-control">
+                      <option selected>Semester 5</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: white;">Save Profile Changes</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 14: SETTINGS -->
+        <section id="page-settings" class="tab-page">
+          <div class="card">
+            <h3 class="card-title"><i class="fa-solid fa-gear" style="color: var(--primary-color);"></i> App Preferences</h3>
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 700;">Dark / Light Theme</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Toggle interface color scheme</div>
+                </div>
+                <button class="btn" id="settings-theme-toggle" style="background: var(--bg-base); border: 1px solid var(--border-color);">Toggle Theme</button>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 700;">Daily Study Reminders</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Receive study push notifications at 6:00 PM</div>
+                </div>
+                <input type="checkbox" checked style="width: 22px; height: 22px;">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGE 15: ABOUT -->
+        <section id="page-about" class="tab-page">
+          <div class="card">
+            <h2 class="card-title" style="font-size: 1.5rem;"><i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> About EduAI Predict Platform</h2>
+            <p style="margin-top: 12px; line-height: 1.7; color: var(--text-muted);">
+              EduAI Predict is an intelligent AI academic management platform. It equips college students with predictive performance modeling, smart lecture attendance tracking, task management, and downloadable academic reports.
+            </p>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Subject Modal -->
+  <div id="add-subject-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 class="card-title" style="margin-bottom: 16px;"><i class="fa-solid fa-book-medical" style="color: var(--primary-color);"></i> Add New Subject</h3>
+      <form id="add-subject-form">
+        <div class="form-group">
+          <label class="form-label">Subject Name <span class="req">*</span></label>
+          <input type="text" id="modal-sub-name" class="form-control" placeholder="e.g. Artificial Intelligence" required>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Subject Code</label>
+            <input type="text" id="modal-sub-code" class="form-control" placeholder="e.g. CS507">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Faculty Name</label>
+            <input type="text" id="modal-sub-faculty" class="form-control" placeholder="e.g. Dr. Anand">
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button type="submit" class="btn btn-primary" style="flex:1; justify-content: center; background: var(--primary-color); color: white;">Save Subject</button>
+          <button type="button" class="btn" id="close-add-subject-modal" style="background: var(--bg-base); border: 1px solid var(--border-color);">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Calendar Date Attendance Modal -->
+  <div id="att-date-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 class="card-title" style="margin-bottom: 16px;" id="att-date-modal-title"><i class="fa-solid fa-calendar-day" style="color: var(--primary-color);"></i> Log Date Attendance</h3>
+      <form id="att-date-form">
+        <div class="form-group">
+          <label class="form-label">Select Subject</label>
+          <select id="modal-date-subject" class="form-control">
+            <option value="Mathematics">Mathematics</option>
+            <option value="Operating System">Operating System</option>
+            <option value="DAA">DAA</option>
+            <option value="Cybersecurity">Cybersecurity</option>
+            <option value="CGVR">CGVR</option>
+            <option value="English">English</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Attendance Status</label>
+          <select id="modal-date-status" class="form-control">
+            <option value="Present">Present (Attended)</option>
+            <option value="Absent">Absent (Missed)</option>
+            <option value="Off">Off (No Lecture / Holiday)</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button type="submit" class="btn btn-primary" style="flex:1; justify-content: center; background: var(--primary-color); color: white;">Save Attendance</button>
+          <button type="button" class="btn" onclick="document.getElementById('att-date-modal').classList.remove('active');" style="background: var(--bg-base); border: 1px solid var(--border-color);">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="att-delete-modal" class="modal-overlay">
+    <div class="modal-box" style="text-align: center;">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--accent-pink-light); color: var(--accent-pink); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 16px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Delete Attendance Record?</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Are you sure you want to delete this attendance entry? This action will adjust your subject totals.</p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" onclick="AttendanceTracker.confirmDeleteHistory();" style="flex:1; justify-content: center; background: var(--accent-pink); color: white;">Yes, Delete</button>
+        <button class="btn" onclick="document.getElementById('att-delete-modal').classList.remove('active');" style="flex:1; justify-content: center; background: var(--bg-base); border: 1px solid var(--border-color);">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Study Task Modal -->
+  <div id="task-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 class="card-title" id="task-modal-title" style="margin: 0; font-size: 1.25rem;"><i class="fa-solid fa-pen-to-square" style="color: var(--primary-color);"></i> Add New Study Task</h3>
+        <button type="button" class="close-modal-icon-btn" id="close-task-modal-x" style="background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 4px;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="task-form" novalidate>
+        <input type="hidden" id="modal-task-id" value="">
+        <div class="form-group">
+          <label class="form-label">Task Name <span class="req">*</span></label>
+          <input type="text" id="modal-task-title" class="form-control" placeholder="e.g. Complete DAA Assignment">
+          <div class="form-error-msg" id="err-task-title" style="display:none; color: var(--accent-pink); font-size: 0.8rem; margin-top: 5px; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Task Name is required.</div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Subject <span class="req">*</span></label>
+            <select id="modal-task-subject" class="form-control">
+              <option value="">Select Subject</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Operating System">Operating System</option>
+              <option value="DAA">DAA</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="CGVR">CGVR</option>
+              <option value="English">English</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="form-error-msg" id="err-task-subject" style="display:none; color: var(--accent-pink); font-size: 0.8rem; margin-top: 5px; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Subject is required.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority <span class="req">*</span></label>
+            <select id="modal-task-priority" class="form-control">
+              <option value="">Select Priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <div class="form-error-msg" id="err-task-priority" style="display:none; color: var(--accent-pink); font-size: 0.8rem; margin-top: 5px; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Priority is required.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Due Date <span class="req">*</span></label>
+          <input type="date" id="modal-task-date" class="form-control">
+          <div class="form-error-msg" id="err-task-date" style="display:none; color: var(--accent-pink); font-size: 0.8rem; margin-top: 5px; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Due Date is required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+          <textarea id="modal-task-desc" class="form-control" rows="3" placeholder="Add study notes, references, or specific instructions..."></textarea>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+          <button type="submit" class="btn btn-primary" id="save-task-btn" style="flex:1; justify-content: center; background: var(--primary-color); color: white;">Save Task</button>
+          <button type="button" class="btn" id="close-task-modal" style="flex:1; justify-content: center; background: var(--bg-base); color: var(--text-main); border: 1px solid var(--border-color);">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Task Confirmation Modal -->
+  <div id="task-delete-modal" class="modal-overlay">
+    <div class="modal-box" style="text-align: center; max-width: 440px;">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--accent-pink-light); color: var(--accent-pink); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 16px;">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Delete Task</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Are you sure you want to delete this task?</p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" id="confirm-delete-task-btn" onclick="Planner.confirmDeleteTask();" style="flex:1; justify-content: center; background: var(--accent-pink); color: white;">Delete</button>
+        <button class="btn" id="cancel-delete-task-btn" onclick="document.getElementById('task-delete-modal').classList.remove('active');" style="flex:1; justify-content: center; background: var(--bg-base); border: 1px solid var(--border-color);">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/toast.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/predictor.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/planner.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/dataset.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
